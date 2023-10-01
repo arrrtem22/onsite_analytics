@@ -32,7 +32,7 @@ class PromptsRepository {
         if (value?.prompts == null) return PromptsState(prompts: [prompt]);
         final prompts = value!.prompts.toList();
         if (prompts.contains(prompt)) {
-          prompts.remove(prompt); // just to change position
+          prompts.remove(prompt); // to change order
         }
         return PromptsState(prompts: prompts..add(prompt));
       });

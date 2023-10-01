@@ -6,6 +6,7 @@ import 'package:injectable/injectable.dart';
 import 'package:onsite_analytics/common/common.dart';
 
 part 'home_cubit.freezed.dart';
+
 part 'home_state.dart';
 
 @injectable
@@ -23,6 +24,13 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   void navigate(String pageName) {
+    if (pageName.isEmpty) {
+      emit(HomeState.failure(
+        prompts: state.prompts,
+        type: FailureType.emptyTextField,
+      ));
+      return;
+    }
     promptsService.addPrompt(pageName);
     emit(HomeState.navigate(
       prompts: state.prompts,
