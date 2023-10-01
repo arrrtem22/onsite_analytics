@@ -1,4 +1,4 @@
-import 'package:character_viewer/common/common.dart';
+import 'package:onsite_analytics/common/common.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

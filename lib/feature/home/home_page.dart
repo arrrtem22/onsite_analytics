@@ -10,16 +10,12 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-      getIt<HomeCubit>()
-        ..init(),
+      create: (context) => getIt<HomeCubit>()..init(),
       child: BlocListener<HomeCubit, HomeState>(
         listener: (context, state) {
-          state.whenOrNull(
-            navigate: (prompts, pageName) {
-              print(pageName);
-            }
-          );
+          state.whenOrNull(navigate: (prompts, pageName) {
+            NonHomeRoute(pageName: pageName).push(context);
+          });
         },
         child: Scaffold(
           appBar: AppBar(),
@@ -49,12 +45,26 @@ class _HomeViewState extends State<HomeView> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const _PromptsWidget(),
-        TextField(
-          controller: controller,
+        BlocBuilder<HomeCubit, HomeState>(
+          builder: (context, state) {
+            return TextField(
+              decoration: InputDecoration(
+                errorText: state.whenOrNull(
+                  failure: (_, type) {
+                    switch (type) {
+                      case FailureType.emptyTextField:
+                        return 'Empty';
+                    }
+                  },
+                ),
+              ),
+              controller: controller,
+            );
+          },
         ),
         const SizedBox(height: 10),
         TextButton(
-          onPressed: () {},
+          onPressed: () => context.read<HomeCubit>().navigate(controller.text),
           child: const Text('Go'),
         ),
       ],
@@ -69,14 +79,13 @@ class _PromptsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<HomeCubit, HomeState>(
         builder: (BuildContext context, HomeState state) {
-          return Wrap(
-            children: state.prompts
-                .map((prompt) =>
-                TextButton(
-                    onPressed: () => context.read<HomeCubit>().navigate(prompt),
-                    child: Text(prompt)))
-                .toList(),
-          );
-        });
+      return Wrap(
+        children: state.prompts
+            .map((prompt) => TextButton(
+                onPressed: () => context.read<HomeCubit>().navigate(prompt),
+                child: Text(prompt)))
+            .toList(),
+      );
+    });
   }
 }

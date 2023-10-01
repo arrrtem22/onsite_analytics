@@ -10,4 +10,13 @@ class HomeState with _$HomeState {
     required List<String> prompts,
     required String pageName
   }) = _Navigate;
+
+  const factory HomeState.failure({
+    required List<String> prompts,
+    required FailureType type,
+}) = _Error;
+}
+
+enum FailureType {
+  emptyTextField,
 }
