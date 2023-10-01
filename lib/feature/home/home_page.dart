@@ -10,12 +10,23 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => getIt<HomeCubit>(),
-      child: Scaffold(
-        appBar: AppBar(),
-        body: const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20.0),
-          child: HomeView(),
+      create: (context) =>
+      getIt<HomeCubit>()
+        ..init(),
+      child: BlocListener<HomeCubit, HomeState>(
+        listener: (context, state) {
+          state.whenOrNull(
+            navigate: (prompts, pageName) {
+              print(pageName);
+            }
+          );
+        },
+        child: Scaffold(
+          appBar: AppBar(),
+          body: const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.0),
+            child: HomeView(),
+          ),
         ),
       ),
     );
@@ -37,6 +48,7 @@ class _HomeViewState extends State<HomeView> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        const _PromptsWidget(),
         TextField(
           controller: controller,
         ),
@@ -47,5 +59,24 @@ class _HomeViewState extends State<HomeView> {
         ),
       ],
     );
+  }
+}
+
+class _PromptsWidget extends StatelessWidget {
+  const _PromptsWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<HomeCubit, HomeState>(
+        builder: (BuildContext context, HomeState state) {
+          return Wrap(
+            children: state.prompts
+                .map((prompt) =>
+                TextButton(
+                    onPressed: () => context.read<HomeCubit>().navigate(prompt),
+                    child: Text(prompt)))
+                .toList(),
+          );
+        });
   }
 }
