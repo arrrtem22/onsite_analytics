@@ -5,6 +5,17 @@ import 'package:onsite_analytics/feature/non_home/non_home.dart';
 
 part 'app_router.g.dart';
 
+extension RouterHelper on BuildContext {
+  void popUntil(String routeLocation) {
+    Navigator.of(this).popUntil(
+          (route) =>
+      route.isFirst ||
+          !route.willHandlePopInternally &&
+              route.settings.name == routeLocation,
+    );
+  }
+}
+
 @TypedGoRoute<HomeRoute>(
   path: '/',
 )

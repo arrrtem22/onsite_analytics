@@ -2,6 +2,6 @@ bricks:
   feature:
     path: .bricks/feature
   dto:
-    path: .bricks/dto
+    path: .bricks/dto.dart
   api:
     path: .bricks/api
